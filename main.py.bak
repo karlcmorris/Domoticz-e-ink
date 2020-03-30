@@ -1,0 +1,80 @@
+import epd7in5
+from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
+from datetime import datetime
+import requests
+import json
+
+#import imageda
+EPD_WIDTH = 640
+EPD_HEIGHT = 384
+now = datetime.now()
+current_time = now.strftime("%H:%M:%S")
+url1 = 'http://192.168.1.2:8080/json.htm?type=devices&rid=293'
+url2 = 'http://192.168.1.2:8080/json.htm?type=devices&rid=163'
+url3 = 'http://192.168.1.2:8080/json.htm?type=devices&rid=118'
+url4 = 'http://192.168.1.44/cm?cmnd=status%208'
+url5 = 'http://192.168.1.50/cm?cmnd=status%208'
+data1 = requests.get(url1).json()
+data2 = requests.get(url2).json()
+data3 = requests.get(url3).json()
+data4 = requests.get(url4).json()
+data5 = requests.get(url5).json()
+
+tashouse = (data4['StatusSNS']['ENERGY']['Power'])
+tassolar = (data5['StatusSNS']['ENERGY']['Power'])
+tassolartoday = (data5['StatusSNS']['ENERGY']['Today'])
+if tassolar <= 5:
+	tassolar = 0
+
+solardelta = tassolar - tashouse
+
+for scrape  in  data1['result']:
+#    print (scrape['Data'])
+    watts = (scrape['Data'])
+    timestamp = (scrape['LastUpdate'])
+
+for scrape  in  data2['result']:
+#    print (scrape['Data'])
+    housewatts = (scrape['Data'])
+
+for scrape  in  data3['result']:
+#    print (scrape['Data'])
+    gainwatts = (scrape['Data'])
+#    print (scrape)
+
+def main():
+    epd = epd7in5.EPD()
+    epd.init()
+
+    # For simplicity, the arguments are explicit numerical coordinates
+    image = Image.new('1', (EPD_WIDTH, EPD_HEIGHT), 1)    # 1: clear the frame
+    draw = ImageDraw.Draw(image)
+    font1 = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 18)
+    font2 = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 60)
+    font3 = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMonoBold.ttf', 24)
+
+#    draw.rectangle((0, 0, 640, 384), fill = 255)
+#    draw.text((200, 10), 'Karl Morris', font = font, fill = 0)
+#    draw.text((0, 100), "Time:%s" % now, font = font, fill = 0)
+    draw.rectangle((10, 10, 630, 374), fill = 255, outline = 0)
+    draw.text((0, 200), "Solar:%s" % tassolar, font = font2, fill = 0)
+    draw.text((0, 100), "House:%s" % tashouse, font = font2, fill = 0)
+    draw.text((0, 300), "Gain :%s" % solardelta, font = font2, fill = 0)
+    draw.text((0, 0), "Time:%s" % current_time, font = font3, fill = 0)
+    draw.text((0, 25), "solar Today:%s" % tasolartoday, font = font3, fill = 0)
+#    draw.rectangle((200, 80, 600, 280), fill = 255, outline = 0)
+    draw.arc((240, 120, 580, 220), 0, 360, fill = 0)
+#    draw.rectangle((0, 80, 160, 280), fill = 255)
+#    draw.arc((40, 80, 180, 220), 0, 360, fill = 0)
+    epd.display_frame(epd.get_frame_buffer(image))
+
+#    image = Image.open('monocolor.bmp')
+#    epd.display_frame(epd.get_frame_buffer(image))
+
+    # You can get frame buffer from an image or import the buffer directly:
+    #epd.display_frame(imagedata.MONOCOLOR_BITMAP)
+
+if __name__ == '__main__':
+    main()
