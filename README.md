@@ -10,4 +10,6 @@ Main.py runs via crontab every 5 mins. The e-ink screen takes around 5 seconds t
 
 The image of my daughter is there beacuse she didnt think it was possible - Paige, github fame awaits:)
 
+ToDo: Optimise code. Add weather, clearer fonts, a little more data from domoticz & remove Paige(sorry P)
+
 ![alt text](https://github.com/karlcmorris/Domoticz-e-ink/blob/master/gallery/IMG_3882.jpg)
