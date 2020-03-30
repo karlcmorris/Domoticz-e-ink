@@ -37,7 +37,7 @@ url4 = 'http://192.168.1.44/cm?cmnd=status%208' # House Power
 url5 = 'http://192.168.1.50/cm?cmnd=status%208' # Solar Power
 url6 = 'http://192.168.1.36/cm?cmnd=status%200' # Pool Pump
 url7 = 'http://192.168.1.39/cm?cmnd=status%200' # Pool Heater
-# http://api.openweathermap.org/data/2.5/forecast?q=sydney,NSW,AU&appid=956e5fb3d6065c802a7aabf0e075d607
+# http://api.openweathermap.org/data/2.5/forecast?q=sydney,NSW,AU&appid="your api here'
 data1 = requests.get(url1, timeout=5).json()
 data2 = requests.get(url2, timeout=5).json()
 #data3 = requests.get(url3, timeout=5).json()
